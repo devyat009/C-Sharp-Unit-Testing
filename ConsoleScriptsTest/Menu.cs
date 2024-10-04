@@ -10,13 +10,12 @@ using System.Threading.Tasks;
 // WIP
 namespace ConsoleScriptsTest
 {
-    internal class Menu
+    internal static class Menu
     {
         public static async Task MenuAPP(string[] args)
         {
-            bool contnue = true;
             bool stop_input = true;
-            while (contnue)
+            while (true)
             {
                 while (stop_input)
                 {
@@ -27,128 +26,146 @@ namespace ConsoleScriptsTest
                     Console.WriteLine("0 - Sair");
                     Console.Write("Escolha : ");
                     string? user_input = Console.ReadLine();
-                    if (string.IsNullOrWhiteSpace(user_input))
+                    if (ChecarNumero(user_input))
+                    {
+                        switch (user_input)
+                        {
+                            case "1":
+                                stop_input = false;
+                                while (true)
+                                {
+                                    Console.Clear();
+                                    Console.WriteLine("1 - Soma");
+                                    Console.WriteLine("2 - Subtração");
+                                    Console.WriteLine("3 - Divisão");
+                                    Console.WriteLine("4 - Multiplicação");
+                                    Console.WriteLine("0 - Voltar");
+                                    Console.Write("Escolha : ");
+                                    string? choice_input = Console.ReadLine();
+                                    if (ChecarNumero(choice_input))
+                                    {
+                                        switch (choice_input)
+                                        {
+                                            case "1":
+                                                while (true)
+                                                {
+                                                    Console.Clear();
+                                                    Console.WriteLine("Insira o primeiro número para somar");
+                                                    Console.Write("Escolha: ");
+                                                    string? num1 = Console.ReadLine();
+
+                                                    // Checa se só tem número com a função checarNumero
+                                                    if (ChecarNumero(num1))
+                                                    {
+                                                        // Transforma a string num1 em float
+                                                        float fnum1;
+                                                        float.TryParse(num1, NumberStyles.Float, new CultureInfo("pt-BR"), out fnum1);
+                                                        while (true)
+                                                        {
+                                                            // Recebimento do segundo input
+                                                            Console.WriteLine("Insira o segundo número para somar");
+                                                            Console.Write("Escolha: ");
+                                                            string? num2 = Console.ReadLine();
+
+                                                            // Checa se só tem número com a função checarNumero
+                                                            if (ChecarNumero(num2))
+                                                            {
+                                                                Console.Clear();
+                                                                // Transforma a string num2 em float
+                                                                float fnum2;
+                                                                float.TryParse(num2, NumberStyles.Float, new CultureInfo("pt-BR"), out fnum2);
+                                                                float restultado = Matematica.Somar(fnum1, fnum2);
+                                                                Console.WriteLine($"O resultado é {restultado}");
+                                                                Console.WriteLine("Pressione qualquer tecla para continuar...");
+                                                                Console.ReadKey();
+                                                                await Menu.MenuAPP(args);
+                                                                break;
+                                                            }
+                                                            else
+                                                            {
+                                                                Console.WriteLine("Entrada INVÁLIDA tente novamente...");
+                                                                continue;
+                                                            }
+                                                        }
+                                                        break;
+                                                    }
+                                                    else
+                                                    {
+                                                        Console.WriteLine("Entrada INVÁLIDA, pressione qualquer tecla para tentar novamente...");
+                                                        Console.ReadKey();
+                                                        continue;
+                                                    }
+                                                }
+
+                                                break;
+                                            case "0":
+                                                await Menu.MenuAPP(args);
+                                                break;
+                                            default:
+
+                                                Console.WriteLine("Entrada INVÁLIDA. Pressione qualquer tecla para tentar novamente...");
+                                                Console.ReadKey();
+                                                break;
+                                        }
+                                    }
+                                    else
+                                    {
+                                        Console.WriteLine("Entrada INVÁLIDA, pressione qualquer tecla para tentar novamente...");
+                                        Console.ReadKey();
+                                        continue;
+                                    }
+                                } 
+                            case "2":
+                                stop_input = false;
+                                while (true)
+                                {
+                                    Console.Clear();
+                                    Console.WriteLine("Digite o CEP para realizar uma busca:");
+                                    Console.Write("CEP: ");
+                                    string? cepInput = Console.ReadLine();
+                                    if (ChecarNumero(cepInput))
+                                    {
+                                        string? cep_data = await RequestApi.GetCep(cepInput);
+                                        if (string.IsNullOrEmpty(cep_data))
+                                        {
+                                            Console.WriteLine("Verifique o CEP e pressione qualquer tecla para continuar...");
+                                            stop_input = true;
+                                            Console.ReadKey();
+                                            continue;
+                                        }
+                                        Console.WriteLine(cep_data);
+                                        Console.WriteLine("\nPressione qualquer tecla para voltar ao menu...");
+                                        Console.ReadKey();
+                                        await Menu.MenuAPP(args);
+                                    }
+                                    else
+                                    {
+                                        Console.WriteLine("Entrada INVÁLIDA, pressione qualquer tecla para tentar novamente...");
+                                        Console.ReadKey();
+                                        continue;
+                                    }
+                                }
+                            case "0":
+                                return;
+                        }
+                    }
+                    else
                     {
                         Console.WriteLine("Entrada INVÁLIDA, pressione qualquer tecla para tentar novamente...");
                         Console.ReadKey();
-                        continue;
-                    }
-
-                    switch (user_input)
-                    {
-                        case "1":
-                            stop_input = false;
-                            Console.Clear();
-                            Console.WriteLine("1 - Soma");
-                            Console.WriteLine("2 - Subtração");
-                            Console.WriteLine("3 - Divisão");
-                            Console.WriteLine("4 - Multiplicação");
-                            Console.WriteLine("0 - Voltar");
-                            Console.Write("Escolha : ");
-                            string? choice_input = Console.ReadLine();
-                            if (string.IsNullOrWhiteSpace(choice_input))
-                            {
-                                Console.WriteLine("Entrada INVÁLIDA, pressione qualquer tecla para tentar novamente...");
-                                Console.ReadKey();
-                                continue;
-                            }
-                            switch (choice_input)
-                            {
-                                case "1":
-                                    while (true)
-                                    {
-                                        Console.Clear();
-                                        Console.WriteLine("Insira o primeiro número para somar");
-                                        Console.Write("Escolha: ");
-                                        string? num1 = Console.ReadLine();
-
-                                        // Checa se só tem número com a função checarNumero
-                                        if (checarNumero(num1))
-                                        {
-                                            // Transforma a string num1 em float
-                                            float fnum1;
-                                            float.TryParse(num1, NumberStyles.Float, new CultureInfo("pt-BR"), out fnum1);
-                                            while (true)
-                                            {
-                                                // Recebimento do segundo input
-                                                Console.WriteLine("Insira o segundo número para somar");
-                                                Console.Write("Escolha: ");
-                                                string? num2 = Console.ReadLine();
-
-                                                // Checa se só tem número com a função checarNumero
-                                                if (checarNumero(num2))
-                                                {
-                                                    Console.Clear();
-                                                    // Transforma a string num2 em float
-                                                    float fnum2;
-                                                    float.TryParse(num2, NumberStyles.Float, new CultureInfo("pt-BR"), out fnum2);
-                                                    float restultado = matematica.Somar(fnum1, fnum2);
-                                                    Console.WriteLine($"O resultado é {restultado}");
-                                                    Console.WriteLine("Pressione qualquer tecla para continuar...");
-                                                    Console.ReadKey();
-                                                    await Menu.MenuAPP(args);
-                                                    break;
-                                                }
-                                                else
-                                                {
-                                                    Console.WriteLine("Entrada INVÁLIDA tente novamente...");
-                                                    continue;
-                                                }
-                                            }
-                                            break;
-                                        }
-                                        else
-                                        {
-                                            Console.WriteLine("Entrada INVÁLIDA tente novamente...");
-                                            continue;
-                                        }
-                                    }
-                                    break;
-                                case "0":
-                                    await Menu.MenuAPP(args);
-                                    break;
-                            }
-                            
-
-                            break;
-                        case "2":
-                            stop_input = false;
-                            Console.Clear();
-                            Console.WriteLine("Digite o CEP para realizar uma busca:");
-                            Console.Write("CEP: ");
-                            string? cepInput = Console.ReadLine();
-                            if (string.IsNullOrEmpty(cepInput))
-                            {
-                                Console.WriteLine("Entrada INVÁLIDA, pressione qualquer tecla para tentar novamente...");
-                                Console.ReadKey();
-                                continue;
-                            }
-
-                            string? cep_data = await requestAPI.GetCEP(cepInput);
-                            if (string.IsNullOrEmpty(cep_data))
-                            {
-                                Console.WriteLine("Verifique o CEP e pressione qualquer tecla para continuar...");
-                                stop_input = true;
-                                Console.ReadKey();
-                                continue;
-                            }
-                            Console.WriteLine(cep_data);
-                            Console.WriteLine("\nPressione qualquer tecla para voltar ao menu...");
-                            Console.ReadKey();
-                            await Menu.MenuAPP(args);
-                            break;
-                        case "0":
-                            contnue = false;
-                            return;
                     }
                 }
             }
         }
 
         // Checagem se a string tem apenas números
-        public static bool checarNumero(string? checar_input)
+        public static bool ChecarNumero(string? checarInput)
         {
-            bool containsOnlyDigits = Regex.IsMatch(checar_input, @"^\d+$");
+            if (string.IsNullOrWhiteSpace(checarInput))
+            {
+                return false;
+            }
+            bool containsOnlyDigits = Regex.IsMatch(checarInput, @"^\d+$");
             if (containsOnlyDigits)
             {
                 return true;
@@ -159,7 +176,7 @@ namespace ConsoleScriptsTest
             }
         }
     }
-    internal class Program
+    internal static class Program
     {
         static async Task Main(string[] args)
         {
